@@ -1,4 +1,4 @@
-#Capacitor-Android-Hotspot
+# Capacitor-Android-Hotspot
 
 *Only for Android .... in case the name of the plugin is not explicit enough*
 
