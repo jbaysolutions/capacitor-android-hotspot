@@ -125,41 +125,49 @@ public class AndroidHotspotPlugin extends Plugin {
         WifiManager wifiManager = (WifiManager) getContext().getApplicationContext().getSystemService(getContext().WIFI_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            wifiManager.startLocalOnlyHotspot(new WifiManager.LocalOnlyHotspotCallback() {
+            try {
+                wifiManager.startLocalOnlyHotspot(new WifiManager.LocalOnlyHotspotCallback() {
 
-                @Override
-                public void onStarted(WifiManager.LocalOnlyHotspotReservation reservation) {
-                    super.onStarted(reservation);
-                    hotspotReservation = reservation;
-                    currentConfig = hotspotReservation.getWifiConfiguration();
+                    @Override
+                    public void onStarted(WifiManager.LocalOnlyHotspotReservation reservation) {
+                        super.onStarted(reservation);
+                        hotspotReservation = reservation;
+                        currentConfig = hotspotReservation.getWifiConfiguration();
 
-                    Log.v(TAG, "THE PASSWORD IS: "
-                            + currentConfig.preSharedKey
-                            + " \n SSID is : "
-                            + currentConfig.SSID);
+                        Log.v(TAG, "THE PASSWORD IS: "
+                                + currentConfig.preSharedKey
+                                + " \n SSID is : "
+                                + currentConfig.SSID);
 
-                    JSObject ret = new JSObject();
-                    ret.put("ssid", currentConfig.SSID);
-                    ret.put("preSharedKey", currentConfig.preSharedKey);
-                    call.success(ret);
+                        JSObject ret = new JSObject();
+                        ret.put("ssid", currentConfig.SSID);
+                        ret.put("preSharedKey", currentConfig.preSharedKey);
+                        call.success(ret);
+                    }
+
+                    @Override
+                    public void onStopped() {
+                        super.onStopped();
+                        Log.v(TAG, "Local Hotspot Stopped");
+                        hotspotReservation = null;
+                        currentConfig =null;
+                        call.error("Local Hotspot Stopped");
+                    }
+
+                    @Override
+                    public void onFailed(int reason) {
+                        super.onFailed(reason);
+                        Log.v(TAG, "Local Hotspot failed to start");
+                        call.error("Local Hotspot failed to start with reason : " + reason);
+                    }
+                }, new Handler());
+            } catch (SecurityException e) {
+                if (e.getMessage().equals("Location mode is not enabled")) {
+                    call.error("Location mode is not enabled");
+                } else {
+                    throw e;
                 }
-
-                @Override
-                public void onStopped() {
-                    super.onStopped();
-                    Log.v(TAG, "Local Hotspot Stopped");
-                    hotspotReservation = null;
-                    currentConfig =null;
-                    call.error("Local Hotspot Stopped");
-                }
-
-                @Override
-                public void onFailed(int reason) {
-                    super.onFailed(reason);
-                    Log.v(TAG, "Local Hotspot failed to start");
-                    call.error("Local Hotspot failed to start with reason : " + reason);
-                }
-            }, new Handler());
+            }
         } else {
             JSObject ret = new JSObject();
             ret.put("error", true);
