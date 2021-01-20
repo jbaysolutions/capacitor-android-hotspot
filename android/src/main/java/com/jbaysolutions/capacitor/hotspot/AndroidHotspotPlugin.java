@@ -1,11 +1,15 @@
 package com.jbaysolutions.capacitor.hotspot;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Handler;
+import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.getcapacitor.JSObject;
@@ -71,8 +75,8 @@ public class AndroidHotspotPlugin extends Plugin {
     @PluginMethod()
     public  void hasPermissions(PluginCall call) {
         JSObject ret = new JSObject();
-        ret.put("location", PermissionManager.canAccessLocation(getActivity()));
-        ret.put("wifiState", PermissionManager.canChangeWifiState(getActivity()));
+        ret.put("location", PermissionManager.canAccessLocation(getContext().getApplicationContext()));
+        ret.put("wifiState", PermissionManager.canChangeWifiState(getContext().getApplicationContext()));
         ret.put("allPermissions", ret.getBool("location") && ret.getBool("wifiState") );
         call.success(ret);
     }
@@ -118,6 +122,21 @@ public class AndroidHotspotPlugin extends Plugin {
         call.error("No Hotspot Running");
     }
 
+    @PluginMethod()
+    public void openLocationSettings(PluginCall call) {
+        try {
+            Intent requestLocationsToBeEnabled = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            requestLocationsToBeEnabled.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getActivity().startActivity(requestLocationsToBeEnabled);
+            call.success();
+        } catch (Exception e) {
+            e.printStackTrace();
+            call.error("Problem opening Location Settings");
+        }
+    }
+
+
+
     public static WifiConfiguration currentConfig;
     static WifiManager.LocalOnlyHotspotReservation hotspotReservation;
 
@@ -125,54 +144,73 @@ public class AndroidHotspotPlugin extends Plugin {
         WifiManager wifiManager = (WifiManager) getContext().getApplicationContext().getSystemService(getContext().WIFI_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            try {
-                wifiManager.startLocalOnlyHotspot(new WifiManager.LocalOnlyHotspotCallback() {
 
-                    @Override
-                    public void onStarted(WifiManager.LocalOnlyHotspotReservation reservation) {
-                        super.onStarted(reservation);
-                        hotspotReservation = reservation;
-                        currentConfig = hotspotReservation.getWifiConfiguration();
-
-                        Log.v(TAG, "THE PASSWORD IS: "
-                                + currentConfig.preSharedKey
-                                + " \n SSID is : "
-                                + currentConfig.SSID);
-
-                        JSObject ret = new JSObject();
-                        ret.put("ssid", currentConfig.SSID);
-                        ret.put("preSharedKey", currentConfig.preSharedKey);
-                        call.success(ret);
-                    }
-
-                    @Override
-                    public void onStopped() {
-                        super.onStopped();
-                        Log.v(TAG, "Local Hotspot Stopped");
-                        hotspotReservation = null;
-                        currentConfig =null;
-                        call.error("Local Hotspot Stopped");
-                    }
-
-                    @Override
-                    public void onFailed(int reason) {
-                        super.onFailed(reason);
-                        Log.v(TAG, "Local Hotspot failed to start");
-                        call.error("Local Hotspot failed to start with reason : " + reason);
-                    }
-                }, new Handler());
-            } catch (SecurityException e) {
-                if (e.getMessage().equals("Location mode is not enabled")) {
-                    call.error("Location mode is not enabled");
-                } else {
-                    throw e;
-                }
+            if (!isLocationEnabled(getContext().getApplicationContext())) {
+                call.error("Location mode is not enabled");
+                return;
             }
+
+            wifiManager.startLocalOnlyHotspot(new WifiManager.LocalOnlyHotspotCallback() {
+
+                @Override
+                public void onStarted(WifiManager.LocalOnlyHotspotReservation reservation) {
+                    super.onStarted(reservation);
+                    hotspotReservation = reservation;
+                    currentConfig = hotspotReservation.getWifiConfiguration();
+
+                    Log.v(TAG, "THE PASSWORD IS: "
+                            + currentConfig.preSharedKey
+                            + " \n SSID is : "
+                            + currentConfig.SSID);
+
+                    JSObject ret = new JSObject();
+                    ret.put("ssid", currentConfig.SSID);
+                    ret.put("preSharedKey", currentConfig.preSharedKey);
+                    call.success(ret);
+                }
+
+                @Override
+                public void onStopped() {
+                    super.onStopped();
+                    Log.v(TAG, "Local Hotspot Stopped");
+                    hotspotReservation = null;
+                    currentConfig =null;
+                    call.error("Local Hotspot Stopped");
+                }
+
+                @Override
+                public void onFailed(int reason) {
+                    super.onFailed(reason);
+                    Log.v(TAG, "Local Hotspot failed to start");
+                    call.error("Local Hotspot failed to start with reason : " + reason);
+                }
+            }, new Handler());
+
         } else {
             JSObject ret = new JSObject();
             ret.put("error", true);
             ret.put("errorMessage", "Oreo minimum please.");
             call.success(ret);
+        }
+    }
+
+    public static boolean isLocationEnabled(Context context) {
+        int locationMode = 0;
+        String locationProviders;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+            try {
+                locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
+            } catch (Settings.SettingNotFoundException e) {
+                e.printStackTrace();
+                return false;
+            }
+
+            return locationMode != Settings.Secure.LOCATION_MODE_OFF;
+
+        }else{
+            locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+            return !TextUtils.isEmpty(locationProviders);
         }
     }
 }

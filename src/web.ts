@@ -42,6 +42,11 @@ export class AndroidHotspotPluginWeb extends WebPlugin implements AndroidHotspot
     return;
   }
 
+  // openLocationSettings(): Promise<void>
+  async openLocationSettings(): Promise<void> {
+    return;
+  }
+
   // getHotspotConfig(): Promise<{details: object}>;
   async getHotspotConfig(): Promise<object> {
     return {

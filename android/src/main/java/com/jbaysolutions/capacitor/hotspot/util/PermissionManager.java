@@ -2,6 +2,7 @@ package com.jbaysolutions.capacitor.hotspot.util;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 
 import androidx.core.app.ActivityCompat;
@@ -20,12 +21,12 @@ public class PermissionManager {
         return instance;
     }
 
-    public static boolean canAccessLocation(Activity unityActivity) {
-        return(hasPermission(unityActivity, Manifest.permission.ACCESS_FINE_LOCATION));
+    public static boolean canAccessLocation(Context context) {
+        return(hasPermission(context, Manifest.permission.ACCESS_FINE_LOCATION));
     }
 
-    public static boolean canChangeWifiState(Activity unityActivity) {
-        return(hasPermission(unityActivity, Manifest.permission.CHANGE_WIFI_STATE));
+    public static boolean canChangeWifiState(Context context) {
+        return(hasPermission(context, Manifest.permission.CHANGE_WIFI_STATE));
     }
 
     public static void makeRequestPermissions(Activity unityActivity) {
@@ -35,8 +36,8 @@ public class PermissionManager {
 
     }
 
-    private static boolean hasPermission(Activity unityActivity, String perm) {
-        return(PackageManager.PERMISSION_GRANTED== ContextCompat.checkSelfPermission(unityActivity, perm));
+    private static boolean hasPermission(Context context, String perm) {
+        return(PackageManager.PERMISSION_GRANTED== ContextCompat.checkSelfPermission(context, perm));
     }
 
 }

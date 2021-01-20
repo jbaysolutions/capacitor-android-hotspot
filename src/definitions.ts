@@ -6,9 +6,9 @@ declare module '@capacitor/core' {
 
 export interface AndroidHotspotPluginPlugin {
 
-  echo(options: { value: string }): Promise<{ value: string }>;
+  echo(options: { value: string }): Promise<{ value: string }>
 
-  hasPermissions(): Promise<{allPermissions: boolean, location: boolean, wifiState:boolean}> ;
+  hasPermissions(): Promise<{allPermissions: boolean, location: boolean, wifiState:boolean}>
 
   requestAndroidPermissions(): Promise<void>
 
@@ -16,5 +16,7 @@ export interface AndroidHotspotPluginPlugin {
 
   stopHotspot(): Promise<void>
 
-  getHotspotConfig(): Promise<object>;
+  getHotspotConfig(): Promise<object>
+
+  openLocationSettings(): Promise<void>
 }
