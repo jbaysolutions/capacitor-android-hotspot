@@ -10,6 +10,8 @@ export interface AndroidHotspotPluginPlugin {
 
   hasPermissions(): Promise<{allPermissions: boolean, location: boolean, wifiState:boolean}>
 
+  getIsLocationEnabled(): Promise<{locationEnabled: boolean}>
+
   requestAndroidPermissions(): Promise<void>
 
   createHotspot(): Promise<object>;

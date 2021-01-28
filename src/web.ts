@@ -23,6 +23,12 @@ export class AndroidHotspotPluginWeb extends WebPlugin implements AndroidHotspot
     };
   }
 
+  async getIsLocationEnabled(): Promise<{locationEnabled: boolean}> {
+    return {
+      locationEnabled: false
+    }
+  }
+
   // requestAndroidPermissions(): Promise<{}>;
   async requestAndroidPermissions(): Promise<void> {
     return;

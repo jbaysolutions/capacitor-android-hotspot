@@ -16,6 +16,9 @@ they will be sharing the underlying hotspot.
 ## How to use this
 
 * Git clone this code
+
+* Build it using : `yarn build`
+
 * Add the plugin to your Capacitor Android Project
 
 ```

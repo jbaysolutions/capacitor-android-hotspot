@@ -135,6 +135,12 @@ public class AndroidHotspotPlugin extends Plugin {
         }
     }
 
+    @PluginMethod()
+    public  void getIsLocationEnabled(PluginCall call) {
+        JSObject ret = new JSObject();
+        ret.put("locationEnabled", isLocationEnabled(getContext().getApplicationContext()));
+        call.success(ret);
+    }
 
 
     public static WifiConfiguration currentConfig;
