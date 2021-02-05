@@ -15,6 +15,14 @@ they will be sharing the underlying hotspot.
 
 ## How to use this
 
+If you want to use the official version that is published on npm : 
+
+```
+yarn add capacitor-android-hotspot
+```
+
+If you want to use a clone of this repository: 
+
 * Git clone this code
 
 * Build it using : `yarn build`
@@ -25,7 +33,9 @@ they will be sharing the underlying hotspot.
 yarn add file:/path/to/capacitor-android-hotspot
 ```
 
-*  Do Android Plugin integration
+
+
+**Now do Android Plugin integration:**
 
 ```java
 package com.example.android.project;
