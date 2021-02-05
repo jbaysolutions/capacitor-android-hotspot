@@ -1,5 +1,11 @@
 # Capacitor-Android-Hotspot
 
+**Current version: 0.0.8**
+
+**NPM release: https://www.npmjs.com/package/capacitor-android-hotspot**
+
+--- 
+
 **Only for Android .... in case the name of the plugin is not explicit enough**
 
 Capacitor plugin to allow creating a local only hotspot that an application can use to communicate 
@@ -32,8 +38,6 @@ If you want to use a clone of this repository:
 ```
 yarn add file:/path/to/capacitor-android-hotspot
 ```
-
-
 
 **Now do Android Plugin integration:**
 
