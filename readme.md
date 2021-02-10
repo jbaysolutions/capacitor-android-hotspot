@@ -1,4 +1,17 @@
-# Capacitor-Android-Hotspot
+<p align="center"><a href="https://jbaysolutions.github.io/capacitor-android-hotspot/" target="_blank" rel="noopener noreferrer">
+<img width="100" src="https://jbaysolutions.github.io/capacitor-android-hotspot/assets/img/logo.png" alt="Capacitor Android Hotspot"></a></p>
+
+<h1 align="center">Capacitor-Android-Hotspot</h1>
+
+<p align="center">
+<a href="https://www.npmjs.com/package/capacitor-android-hotspot">
+    <img src="https://img.shields.io/npm/v/capacitor-android-hotspot.svg"/> 
+    <img src="https://img.shields.io/npm/dm/capacitor-android-hotspot.svg"/>
+</a></p>
+
+<h2 align="center">
+<a href="https://jbaysolutions.github.io/capacitor-android-hotspot/" target="_blank">Documentation Website</a>
+</h2>
 
 **Current version: 0.0.8**
 
