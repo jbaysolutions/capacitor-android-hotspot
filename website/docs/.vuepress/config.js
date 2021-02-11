@@ -66,7 +66,7 @@ module.exports = {
 	plugins: [
 		'@vuepress/back-to-top',
 		['@vuepress/google-analytics', {
-			ga: 'UA-37288388-25' // UA-00000000-0
+			ga: 'UA-37288388-26' // UA-00000000-0
 		}],
 		['seo', {
 			title: $page => `${$page.title} — Capacitor Android Hotspot`,
